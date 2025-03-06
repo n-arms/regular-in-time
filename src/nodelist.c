@@ -9,6 +9,13 @@ node_list new_node_list() {
   };
 }
 
+void free_node_list(node_list *list) {
+  if (list->elems) free(list->elems);
+  list->elems = NULL;
+  list->length = 0;
+  list->capacity = 0;
+}
+
 void push_to_node_list(node_list *list, size_t value) {
   if (list->capacity == 0) {
     list->elems = malloc(sizeof(size_t));

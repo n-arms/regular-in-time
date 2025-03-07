@@ -57,7 +57,11 @@ void print_regex(regex r) {
       break;
   }
   case regex_tag_character: {
-      printf("%c", r.value.character);
+      char c = r.value.character;
+      if (c == '*' || c == '(' || c == ')' || c == '[' || c == ']') {
+        printf("\\");
+      }
+      printf("%c", c);
       break;
   }
   }

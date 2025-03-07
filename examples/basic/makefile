@@ -1,5 +1,5 @@
-run: ../../target/a.out
-	../../target/a.out
+run: ../../target/basic
+	../../target/basic
 
-../../target/a.out: main.c ../../src/*.c ../../inc/*.h
-	gcc main.c ../../src/*.c -I../../inc/ -o ../../target/a.out -g
+../../target/basic: main.c ../../src/*.c ../../inc/*.h
+	gcc main.c ../../src/*.c -I../../inc/ -o ../../target/basic -g

@@ -18,7 +18,12 @@ bool parse_letter(parser *p, char l) {
     *p = old;
     return false;
   }
-  return out == l;
+  if (out == l) {
+    return true;
+  } else {
+    *p = old;
+    return false;
+  }
 }
 
 /// Only accept a character that the predicate returns true for.
@@ -30,28 +35,32 @@ bool parse_if(parser *p, bool (*predicate)(char), char *out) {
 bool parse_single_regex(parser *p, regex *out) {
   char start;
   if (!parse_any(p, &start)) return false;
+  if (start == ']' || start == ')' || start == '*') {
+    p->start--;
+    return false;
+  }
   if (start == '[') {
     regex_list list;
     if (!parse_regex_list(p, &list)) return false;
     out->tag = regex_tag_or;
     out->value.or = list;
-    return parse_letter(p, ']');
+    if (!parse_letter(p, ']')) return false;
   } else if (start == '(') {
     if (!parse_regex(p, out)) return false;
-    return parse_letter(p, ')');
+    if (!parse_letter(p, ')')) return false;
   } else {
     out->tag = regex_tag_character;
     out->value.character = start;
-
-    while (parse_letter(p, '*')) {
-      regex inner = *out;
-      out->tag = regex_tag_many;
-      out->value.many = malloc(sizeof(regex));
-      *out->value.many = inner;
-    }
-
-    return true;
   }
+
+  while (parse_letter(p, '*')) {
+    regex inner = *out;
+    out->tag = regex_tag_many;
+    out->value.many = malloc(sizeof(regex));
+    *out->value.many = inner;
+  }
+
+  return true;
 }
 
 bool parse_regex_list(parser *p, regex_list *out) {

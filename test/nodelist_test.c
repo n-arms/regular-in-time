@@ -33,4 +33,6 @@ void test_nodelist() {
   assert(list.elems[0] == 1);
   assert(list.elems[1] == 3);
   assert(list.elems[2] == 5);
+
+  free_node_list(&list);
 }
